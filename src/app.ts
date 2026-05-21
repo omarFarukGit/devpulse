@@ -1,10 +1,13 @@
-import express from 'express'
-const app = express()
-const port = 3000
+import express from "express";
+import { AuthRoute } from "./modules/auth/auth.routes";
+const app = express();
+const port = 3000;
 
-app.get('/', (req, res) => {
-  res.send('Hello World!')
-})
+app.use(express.json());
+app.get("/", (req, res) => {
+  res.send("Hello World!");
+});
 
+app.use("/api/auth", AuthRoute);
 
-export default app
+export default app;
