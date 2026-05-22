@@ -15,7 +15,44 @@ const createIssueIntroDB = async (payload: IIssue, reporterId: number) => {
   return result;
 };
 
-const getAllIssuesFromDB = async () => {
+const getAllIssuesFromDB = async (query:any) => {
+
+  const {
+    sort="newest",
+    type,
+    status,
+  }=query;
+
+  let sqlQuery=` SELECT * FROM issues`;
+
+  const conditons:string[]=[];
+  const values:string[]=[];
+
+  //type filter 
+  if(type){
+    values.push(type)
+    conditons.push(`type =$${values.length}`)
+  }
+
+  // status filter
+  if(status){
+    values.push(status);
+    conditons.push(`status =$${values.length}`)
+  }
+
+  // add whare
+  if(conditons.length>0){
+    sqlQuery +=`WHERE ${conditons.join("AND")}`
+  }
+
+  // sorting
+  if(sort==='oldest'){
+    sqlQuery+=` ORDER BY created_at ASC`
+  }else{
+    sqlQuery+=`ORDER BY created_at DESC`
+  }
+
+  // ISSUES QUERY
   const issueResult = await pool.query(`
     SELECT * FROM issues  ORDER BY created_at DESC
     `);
