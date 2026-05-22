@@ -6,8 +6,9 @@ A collaborative platform for software teams to report bugs, suggest features, an
 
 # Live Links
 
-* Live API: [https://your-live-api-url.onrender.com](https://your-live-api-url.onrender.com)
-* GitHub Repository: [https://github.com/yourusername/devpulse](https://github.com/yourusername/devpulse)
+* Live API: [https://devpulse-lac.vercel.app/](https://devpulse-lac.vercel.app/)
+
+* GitHub Repository: [https://github.com/omarFarukGit/devpulse](https://github.com/omarFarukGit/devpulse)
 
 ---
 
