@@ -5,6 +5,7 @@ dotenv.config({ quiet: true });
 const config = {
   port: process.env.PORT as string,
   connectionString: process.env.NEON_URI as string,
+  jwt_secret: process.env.JWT_SECRET as string,
 };
 
 export default config;

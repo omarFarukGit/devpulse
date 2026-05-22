@@ -3,6 +3,7 @@ import { pool } from "../../db";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import type { IUser } from "./auth.interface";
+import config from "../../confing/dotenv.config";
 
 const createUserIntoDB = async (palyload: IUser) => {
   const { name, email, password, role } = palyload;
@@ -47,9 +48,10 @@ const logingUserIntroDB = async (palyload: {
     id: user.id,
     name: user.name,
     role: user.role,
+    email: user.email,
   };
 
-  const token = jwt.sign(jwtPalyload, "hfsfosfj", { expiresIn: "1d" });
+  const token = jwt.sign(jwtPalyload, config.jwt_secret, { expiresIn: "1d" });
 
   delete user.password;
   console.log(token, user);

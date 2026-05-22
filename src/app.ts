@@ -1,10 +1,11 @@
 import express from "express";
 import { AuthRoute } from "./modules/auth/auth.routes";
+import { auth } from "./middleware/auth";
 const app = express();
 const port = 3000;
 
 app.use(express.json());
-app.get("/", (req, res) => {
+app.get("/",auth('contributor'), (req, res) => {
   res.send("Hello World!");
 });
 
