@@ -1,6 +1,7 @@
 import { title } from "node:process";
 import { pool } from "../../db";
 import type { IIssue } from "./issue.intreface";
+import type { JwtPayload } from "jsonwebtoken";
 
 const createIssueIntroDB = async (payload: IIssue, reporterId: number) => {
   const { title, description, type } = payload;
@@ -83,8 +84,49 @@ const getSingleIssueFromDB = async (id: number) => {
   };
 };
 
+const updatedUssueFromDB = async (
+  issueId: number,
+  payload: Partial<IIssue>,
+  user: JwtPayload,
+) => {
+  //find issues
+  const issueResult = await pool.query(
+    `
+    SELECT * FROM issues WHERE id=$1
+    `,
+    [issueId],
+  );
+
+  const issue = issueResult.rows[0];
+  if (!issue) {
+    throw new Error("Issue Not Found");
+  }
+
+  // contributor rules
+  if (user.role === "contributor") {
+    if (issue.reporter_id !== user.id) {
+      throw new Error("You cannot update other issue");
+    }
+    if (issue.status !== "open") {
+      throw new Error("Open issues only editable");
+    }
+  }
+
+  // update query
+
+  const result = await pool.query(
+    `
+    UPDATE issues SET title=$1,description=$2,type=$3,updated_at=CURRENT_TIMESTAMP WHERE id=$4 RETURNING *
+    `,
+    [payload.title, payload.description, payload.type, issueId],
+  );
+
+  return result.rows[0];
+};
+
 export const IssueService = {
   createIssueIntroDB,
   getAllIssuesFromDB,
   getSingleIssueFromDB,
+  updatedUssueFromDB,
 };
