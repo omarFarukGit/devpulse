@@ -21,6 +21,23 @@ const createIssue = async (req: Request, res: Response) => {
   }
 };
 
+const getAllIssues = async (req: Request, res: Response) => {
+  try {
+    const result = await IssueService.getAllIssuesFromDB();
+
+    res.status(200).json({
+      success: true,
+      data: result,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Something went wrong",
+    });
+  }
+};
+
 export const IssuesController = {
   createIssue,
+  getAllIssues,
 };

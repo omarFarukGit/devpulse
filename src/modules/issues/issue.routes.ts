@@ -2,11 +2,14 @@ import { Router } from "express";
 import { IssuesController } from "./issue.controller";
 import { auth } from "../../middleware/auth";
 
+const router = Router();
 
-const router=Router()
+router.post(
+  "/",
+  auth("contributor", "maintainer"),
+  IssuesController.createIssue,
+);
 
-router.post('/', auth('contributor','maistainer'),IssuesController.createIssue)
+router.get("/", IssuesController.getAllIssues);
 
-
-
-export const IssuesRoute=router;
+export const IssuesRoute = router;
