@@ -15,41 +15,36 @@ const createIssueIntroDB = async (payload: IIssue, reporterId: number) => {
   return result;
 };
 
-const getAllIssuesFromDB = async (query:any) => {
+const getAllIssuesFromDB = async (query: any) => {
+  const { sort = "newest", type, status } = query;
 
-  const {
-    sort="newest",
-    type,
-    status,
-  }=query;
+  let sqlQuery = ` SELECT * FROM issues`;
 
-  let sqlQuery=` SELECT * FROM issues`;
+  const conditons: string[] = [];
+  const values: string[] = [];
 
-  const conditons:string[]=[];
-  const values:string[]=[];
-
-  //type filter 
-  if(type){
-    values.push(type)
-    conditons.push(`type =$${values.length}`)
+  //type filter
+  if (type) {
+    values.push(type);
+    conditons.push(`type =$${values.length}`);
   }
 
   // status filter
-  if(status){
+  if (status) {
     values.push(status);
-    conditons.push(`status =$${values.length}`)
+    conditons.push(`status =$${values.length}`);
   }
 
   // add whare
-  if(conditons.length>0){
-    sqlQuery +=`WHERE ${conditons.join("AND")}`
+  if (conditons.length > 0) {
+    sqlQuery += `WHERE ${conditons.join("AND")}`;
   }
 
   // sorting
-  if(sort==='oldest'){
-    sqlQuery+=` ORDER BY created_at ASC`
-  }else{
-    sqlQuery+=`ORDER BY created_at DESC`
+  if (sort === "oldest") {
+    sqlQuery += ` ORDER BY created_at ASC`;
+  } else {
+    sqlQuery += `ORDER BY created_at DESC`;
   }
 
   // ISSUES QUERY
@@ -97,7 +92,9 @@ const getSingleIssueFromDB = async (id: number) => {
   const issue = issueResult.rows[0];
 
   if (!issue) {
-    throw new Error("Issue not found");
+    const error: any = new Error("Issue not found");
+    error.statusCode = 404;
+    throw error;
   }
   //repoterquery
   const reporterResult = await pool.query(

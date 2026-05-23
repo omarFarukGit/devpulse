@@ -44,8 +44,7 @@ const getAllIssues = async (req: Request, res: Response) => {
 
 const getSingleIssue = async (
   req: Request,
-  res: Response,
-  next: NextFunction,
+  res: Response
 ) => {
   try {
     const result = await IssueService.getSingleIssueFromDB(
